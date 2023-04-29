@@ -1,0 +1,1 @@
+<h1>Consulting Ninja Auth Server!</h1>
