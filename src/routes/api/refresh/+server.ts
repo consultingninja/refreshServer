@@ -34,7 +34,7 @@ export const POST  = async({cookies,request}:RequestEvent)=>{
                         return new Response(JSON.stringify({error: true,success:false,message: "Unauthorized!", data: undefined}),{status: 401});
                     }
     
-                    const newAccessToken = jwt.sign({authedUser:claims.authedUser},SECRET_ACCESS,{expiresIn:'10m'});
+                    const newAccessToken = jwt.sign({authedUser:refreshClaims.authedUser},SECRET_ACCESS,{expiresIn:'10m'});
                     cookies.set('authToken',newAccessToken,{httpOnly: true,maxAge:60 * 60 * 24,sameSite: 'strict'});
         
                     return new Response(JSON.stringify({error: false,success:true,message: "Success", data: undefined}),{status: 200});
