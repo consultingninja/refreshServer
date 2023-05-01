@@ -6,16 +6,16 @@ import {SECRET_ACCESS,SECRET_COMM,SECRET_REFRESH} from '$env/static/private';
 
 
 export const POST  = async({cookies,request}:RequestEvent)=>{
-    const commToken = cookies.get('commToken');
-    //const commHeader = request.headers.get('ACCESS-CONTROL-COMM-TOKEN');
-    const reqHeaders = request.headers;
-        if(!commToken)
-        return new Response(JSON.stringify({error: true,success:false,message: "Invalid Request!", data: reqHeaders}),{status: 401});
+
+    const commHeader = request.headers.get('ACCESS-CONTROL-COMM-TOKEN');
+
+        if(!commHeader)
+        return new Response(JSON.stringify({error: true,success:false,message: "Invalid Request!", data: undefined}),{status: 401});
 
 
 
         try{
-            const claims = jwt.verify(commToken,SECRET_COMM);
+            const claims = jwt.verify(commHeader,SECRET_COMM);
             if(!claims){
                 return new Response(JSON.stringify({error: true,success:false,message: "Unauthorized!", data: undefined}),{status: 401});
             }
@@ -23,11 +23,12 @@ export const POST  = async({cookies,request}:RequestEvent)=>{
             if(claims){
                 //only if the comm token checks out do we check refresh token
                 try{
-                    const refreshToken = cookies.get("refreshToken");
+                    const refreshToken = request.headers.get('ACCESS-CONTROL-REFRESH-TOKEN')
+
 
                     if(!refreshToken)return new Response(JSON.stringify({error: true,success:false,message: "Invalid Request!", data: undefined}),{status: 401});
     
-                    const refreshClaims = jwt.verify(commToken,SECRET_REFRESH);
+                    const refreshClaims = jwt.verify(refreshToken,SECRET_REFRESH);
     
                     if(!refreshClaims){
                         return new Response(JSON.stringify({error: true,success:false,message: "Unauthorized!", data: undefined}),{status: 401});
