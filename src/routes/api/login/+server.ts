@@ -4,7 +4,6 @@ import {SECRET_ACCESS,SECRET_COMM,SECRET_REFRESH} from '$env/static/private';
 
 
 export const POST  = async({cookies,request}:RequestEvent)=>{
-    const commToken = cookies.get('commToken');
     const commHeader = request.headers.get('ACCESS-CONTROL-COMM-TOKEN');
     
         if(!commHeader)
