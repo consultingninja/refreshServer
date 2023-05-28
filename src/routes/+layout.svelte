@@ -1,8 +1,3 @@
-<script>
-  import Page from "./+page.svelte";
-
-</script>
-
 
 <div class="main">
     <slot></slot>
