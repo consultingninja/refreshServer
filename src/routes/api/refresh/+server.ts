@@ -2,9 +2,6 @@ import type { RequestEvent } from './$types';
 import jwt from 'jsonwebtoken';
 import {SECRET_ACCESS,SECRET_COMM,SECRET_REFRESH} from '$env/static/private';
 
-
-
-
 export const POST  = async({cookies,request}:RequestEvent)=>{
 
     const commHeader = request.headers.get('ACCESS-CONTROL-COMM-TOKEN');
@@ -12,15 +9,13 @@ export const POST  = async({cookies,request}:RequestEvent)=>{
         if(!commHeader)
         return new Response(JSON.stringify({error: true,success:false,message: "Invalid Request!", data: undefined}),{status: 401});
 
-
-
         try{
             const claims = jwt.verify(commHeader,SECRET_COMM);
             if(!claims){
                 return new Response(JSON.stringify({error: true,success:false,message: "Unauthorized!", data: undefined}),{status: 401});
             }
     
-            if(claims){
+
                 //only if the comm token checks out do we check refresh token
                 try{
                     const refreshToken = request.headers.get('ACCESS-CONTROL-REFRESH-TOKEN')
@@ -44,18 +39,18 @@ export const POST  = async({cookies,request}:RequestEvent)=>{
                         return new Response(JSON.stringify({error: true,success:false,message: "Refresh Expired", data: undefined}),{status: 401});
                         }
                         if (error.name === 'JsonWebTokenError') {
-                            return new Response(JSON.stringify({error: true,success:false,message: "Unable to verify comms!", data: undefined}),{status: 500});
+                            return new Response(JSON.stringify({error: true,success:false,message: "Unable to verify refresh!", data: undefined}),{status: 500});
                         }
                         if (error.name === 'NotBeforeError') {
-                            return new Response(JSON.stringify({error: true,success:false,message: "Invalid comm status", data: undefined}),{status: 401});
+                            return new Response(JSON.stringify({error: true,success:false,message: "Invalid refresh status", data: undefined}),{status: 401});
                         }
                         if (error.name === 'JsonWebTokenError') {
-                            return new Response(JSON.stringify({error: true,success:false,message: "Invalid comm status", data: undefined}),{status: 401});
+                            return new Response(JSON.stringify({error: true,success:false,message: "Invalid refresh status", data: undefined}),{status: 401});
                         }
                 }
 
             }
-        }
+        
         catch(error){
             if (error.name === 'TokenExpiredError') {
                 return new Response(JSON.stringify({error: true,success:false,message: "Comms Expired, try again!", data: undefined}),{status: 401});
